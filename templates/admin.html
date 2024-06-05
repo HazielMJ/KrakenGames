@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Administrar Juegos</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Administrar Juegos</h1>
+        <a class="logout-button" href="{{ url_for('logout') }}">Cerrar Sesión</a>
+        <form action="{{ url_for('add_game') }}" method="post" enctype="multipart/form-data">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            <label for="precio">Precio:</label>
+            <input type="text" id="precio" name="precio" required>
+            <label for="categoria">Categoría:</label>
+            <input type="text" id="categoria" name="categoria" required>
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" name="descripcion" required></textarea>
+            <label for="marca">Marca:</label>
+            <textarea id="marca" name="marca" required></textarea>
+            <label for="imagen">Imagen:</label>
+            <input type="file" id="imagen" name="imagen">
+            <button type="submit">Agregar Juego</button>
+        </form>
+        <ul class="game-list">
+            {% for juego in juegos %}
+                <li class="game-item">
+                    <div class="game-info">
+                        <p><strong>Nombre:</strong> {{ juego[1] }}</p>
+                        <p><strong>Precio:</strong> {{ juego[2] }}</p>
+                        <p><strong>Categoría:</strong> {{ juego[3] }}</p>
+                        <p><strong>Descripción:</strong> {{ juego[4] }}</p>
+                        <p><strong>Marca:</strong> {{ juego[6] }}</p>
+                        {% if juego[5] %}
+                            <p><strong>Imagen:</strong> <img src="data:image/png;base64,{{ juego[5] | b64encode }}" alt="{{ juego[1] }}"></p>
+                        {% else %}
+                            <p><strong>Imagen:</strong> No disponible</p>
+                        {% endif %}
+                    </div>
+                    <div class="game-actions">
+                        <form action="{{ url_for('edit_game', id=juego[0]) }}" method="post" enctype="multipart/form-data">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" id="nombre" name="nombre" value="{{ juego[1] }}" required>
+                            <label for="precio">Precio:</label>
+                            <input type="text" id="precio" name="precio" value="{{ juego[2] }}" required>
+                            <label for="categoria">Categoría:</label>
+                            <input type="text" id="categoria" name="categoria" value="{{ juego[3] }}" required>
+                            <label for="descripcion">Descripción:</label>
+                            <textarea id="descripcion" name="descripcion" required>{{ juego[4] }}</textarea>
+                            <label for="marca">Marca:</label>
+                            <input type="text" id="marca" name="marca" value="{{ juego[6] }}" required>
+                            <label for="imagen">Imagen:</label>
+                            <input type="file" id="imagen" name="imagen">
+                            <button type="submit">Editar Juego</button>
+                        </form>
+                        <form action="{{ url_for('delete_game', id=juego[0]) }}" method="post">
+                            <button class="delete-button" type="submit">Eliminar</button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <style>
+    /* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+/* Formulario y lista de juegos */
+form {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.game-list {
+    list-style: none;
+    padding: 0;
+}
+
+.game-item {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.game-info {
+    padding: 10px;
+}
+
+.game-info p {
+    margin: 5px 0;
+}
+
+.game-info img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
+
+.game-actions {
+    background-color: #f9f9f9;
+    padding: 10px;
+    text-align: center;
+}
+
+.delete-button {
+    padding: 5px 10px;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Estilos para el botón de cierre de sesión */
+.logout-button {
+    display: block;
+    margin-bottom: 20px;
+    text-align: right;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.logout-button:hover {
+    text-decoration: underline;
+}
+</style>
+</html>

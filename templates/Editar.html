@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Juego</title>
+</head>
+<body>
+    <h1>Editar Juego</h1>
+    <form action="{{ url_for('edit_game', id=juego[0]) }}" method="post" enctype="multipart/form-data">
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" id="nombre" value="{{ juego[1] }}" required>
+        <br>
+        <label for="precio">Precio:</label>
+        <input type="number" name="precio" id="precio" value="{{ juego[2] }}" required>
+        <br>
+        <label for="categoria">Categoría:</label>
+        <input type="text" name="categoria" id="categoria" value="{{ juego[3] }}" required>
+        <br>
+        <label for="descripcion">Descripción:</label>
+        <textarea name="descripcion" id="descripcion" required>{{ juego[4] }}</textarea>
+        <br>
+        <label for="imagen">Imagen:</label>
+        <input type="file" name="imagen" id="imagen">
+        <br>
+        <button type="submit">Guardar Cambios</button>
+    </form>
+</body>
+</html>

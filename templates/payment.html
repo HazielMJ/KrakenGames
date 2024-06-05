@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Pago - Tienda de Juegos{% endblock %}
+
+{% block content %}
+<section id="payment">
+    <h2>Información de Pago</h2>
+    <div class="form-container">
+        <form action="{{ url_for('payment') }}" method="post">
+            <div class="form-group">
+                <label for="address">Dirección de Envío:</label>
+                <input type="text" id="address" name="address" required placeholder="Calle, Número, Ciudad, Código Postal">
+            </div>
+
+            <div class="form-group">
+                <label for="payment-method">Método de Pago:</label>
+                <select id="payment-method" name="payment_method" required>
+                    <option value="credit_card">Tarjeta de Crédito</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="bank_transfer">Transferencia Bancaria</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="credit-card-info" style="display:none;">
+                <label for="cc-number">Número de Tarjeta:</label>
+                <input type="text" id="cc-number" name="cc_number" placeholder="1234 5678 9012 3456">
+                <label for="cc-expiry">Fecha de Expiración:</label>
+                <input type="text" id="cc-expiry" name="cc_expiry" placeholder="MM/AA">
+                <label for="cc-cvc">CVC:</label>
+                <input type="text" id="cc-cvc" name="cc_cvc" placeholder="123">
+            </div>
+
+            <div class="form-group" id="paypal-info" style="display:none;">
+                <label for="paypal-email">Correo Electrónico de PayPal:</label>
+                <input type="email" id="paypal-email" name="paypal_email" placeholder="email@ejemplo.com">
+            </div>
+
+            <div class="form-group" id="bank-transfer-info" style="display:none;">
+                <label for="bank-account">Número de Cuenta Bancaria:</label>
+                <input type="text" id="bank-account" name="bank_account" placeholder="ES1234567890123456789012">
+                <label for="bank-name">Nombre del Banco:</label>
+                <input type="text" id="bank-name" name="bank_name" placeholder="Nombre del Banco">
+            </div>
+
+            <button type="submit">Proceder al Pago</button>
+        </form>
+    </div>
+</section>
+
+<script>
+    document.getElementById('payment-method').addEventListener('change', function() {
+        var method = this.value;
+        document.getElementById('credit-card-info').style.display = 'none';
+        document.getElementById('paypal-info').style.display = 'none';
+        document.getElementById('bank-transfer-info').style.display = 'none';
+
+        if (method === 'credit_card') {
+            document.getElementById('credit-card-info').style.display = 'block';
+        } else if (method === 'paypal') {
+            document.getElementById('paypal-info').style.display = 'block';
+        } else if (method === 'bank_transfer') {
+            document.getElementById('bank-transfer-info').style.display = 'block';
+        }
+    });
+</script>
+
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"], input[type="email"], select {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0 10px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    button {
+        width: 100%;
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Tienda de Juegos{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+</head>
+<body>
+    <div class="wrapper">
+        <header id="header">
+            <div class="logo">
+                <a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo de la Tienda">
+                </a>
+            </div>
+
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Buscar juegos...">
+                <button id="search-button">Buscar</button>
+            </div>
+            
+            <div class="nav-buttons">
+                <nav>
+                    {% if session['id'] %}
+                    <a class="button" href="{{ url_for('logout') }}">Cerrar Sesión</a>
+                {% else %}
+                    <a class="button" href="{{ url_for('login') }}">Iniciar Sesión</a>
+                {% endif %}
+                </nav>
+                <a class="button" href="{{ url_for('admin') }}"  {% if session['user_id'] and session['tipo_usuario'] != 'administrador' %}disabled{% endif %}>Administrar</a>
+                <a class="button" href="{{ url_for('cart') }}">Carrito (<span id="cart-count">0</span>)</a>
+                
+            </div>
+        </header>
+        
+        <script>
+    document.getElementById("search-button").addEventListener("click", function() {
+        var input = document.getElementById("search-input").value.toLowerCase();
+        var games = document.getElementsByClassName("game-item");
+
+        for (var i = 0; i < games.length; i++) {
+            var gameName = games[i].getElementsByClassName("game-info")[0].getElementsByTagName("p")[0].innerText.toLowerCase();
+            if (gameName.indexOf(input) > -1) {
+                games[i].style.display = "";
+            } else {
+                games[i].style.display = "none";
+            }
+        }
+    });
+</script>
+<script>
+var prevScrollPos = window.pageYOffset;
+window.onscroll = function() {
+    var currentScrollPos = window.pageYOffset;
+    if (prevScrollPos > currentScrollPos) {
+        document.getElementById("header").style.top = "0";
+    } else {
+        document.getElementById("header").style.top = "-100px"; /* Altura del encabezado */
+    }
+    prevScrollPos = currentScrollPos;
+}
+</script>
+
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+        
+        <footer>
+            <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px; padding: 10px;">
+                    <h4>Sobre Nosotros</h4>
+                    <p>Tienda de Juegos es tu destino principal para los últimos juegos, consolas y accesorios. Nos apasiona todo lo relacionado con el gaming y nos esforzamos por ofrecerte el mejor servicio y productos de calidad.</p>
+                </div>
+                <div style="flex: 1; min-width: 200px; padding: 10px;">
+                    <h4>Enlaces Útiles</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><a href="/about-us">Sobre Nosotros</a></li>
+                        <li><a href="/faq">Preguntas Frecuentes</a></li>
+                        <li><a href="/returns">Devoluciones</a></li>
+                        <li><a href="/shipping">Envíos</a></li>
+                        <li><a href="/privacy-policy">Política de Privacidad</a></li>
+                        <li><a href="/terms-conditions">Términos y Condiciones</a></li>
+                    </ul>
+                </div>
+                <div style="flex: 1; min-width: 200px; padding: 10px;">
+                    <h4>Contacto</h4>
+                    <p>krakengames@gmail.com</p>
+                    <p>Tel: +34 123 456 789</p>
+                    <p>Dirección: Calle Gamer 123, 28001 Madrid, España</p>
+                </div>
+                <div style="flex: 1; min-width: 200px; padding: 10px;">
+                    <h4>Síguenos</h4>
+                    <p>Sigue nuestras redes sociales para enterarte de las últimas novedades y promociones:</p>
+                    <ul style="list-style: none; padding: 0; display: flex;">
+                        <li><a href="https://www.facebook.com/tiendajuegos" target="_blank"><img src="facebook-icon.png" alt="Facebook" style="width: 24px; height: 24px; margin-right: 10px;"></a></li>
+                        <li><a href="https://www.twitter.com/tiendajuegos" target="_blank"><img src="twitter-icon.png" alt="Twitter" style="width: 24px; height: 24px; margin-right: 10px;"></a></li>
+                        <li><a href="https://www.instagram.com/tiendajuegos" target="_blank"><img src="instagram-icon.png" alt="Instagram" style="width: 24px; height: 24px; margin-right: 10px;"></a></li>
+                        <li><a href="https://www.youtube.com/tiendajuegos" target="_blank"><img src="youtube-icon.png" alt="YouTube" style="width: 24px; height: 24px;"></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 10px; border-top: 1px solid #ccc; margin-top: 20px;">
+                <p>&copy; 2024 Tienda de Juegos. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+        
+    </div>
+
+</body>
+</html>

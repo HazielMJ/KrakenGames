@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Tienda de Juegos{% endblock %}
+
+{% block content %}
+
+
+<section id="carousel">
+    <h2>Las mejores marcas aquí</h2>
+    <div class="carousel" id="carousel-container">
+        <a href="{{ url_for('xbox') }}">
+            <img src="{{ url_for('static', filename='xbox.jpg') }}" alt="xbox" data-marca="xbox">
+        </a>
+        <a href="{{ url_for('ps') }}">
+            <img src="{{ url_for('static', filename='play.jpg') }}" alt="playstation" data-marca="playstation">
+        </a>
+        <a href="{{ url_for('nintendo') }}">
+            <img src="{{ url_for('static', filename='nintendo.jpg') }}" alt="nintendo" data-marca="nintendo">
+        </a>
+        <!-- Agrega más imágenes según sea necesario -->
+    </div>
+</section>
+
+<script>
+    // Configura el carrusel automático
+    let currentIndex = 0;
+    const images = document.querySelectorAll('.carousel a');
+    showImage(currentIndex);  // Muestra la primera imagen al cargar la página
+
+    function showNextImage() {
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage(currentIndex);
+    }
+
+    function showImage(index) {
+        images.forEach((link, i) => {
+            const image = link.querySelector('img');
+            if (i === index) {
+                image.style.display = 'block';
+            } else {
+                image.style.display = 'none';
+            }
+        });
+    }
+
+    setInterval(showNextImage, 6000); 
+</script>
+
+<select id="category-filter" onchange="filterByCategoryOrBrand()">
+    <option value="">Filtrar por Categoría:</option>
+    {% for categoria in categorias %}
+        <option value="{{ categoria }}">{{ categoria }}</option>
+    {% endfor %}
+</select>
+
+
+<script>
+    function filterByCategoryOrBrand() {
+        const category = document.getElementById('category-filter').value;
+        let url = '/filter?';
+        if (category) {
+            url += `categoria=${category}&`;
+        }
+
+        window.location.href = url;
+    }
+</script>
+
+<section id="products">
+    <h2>Juegos Disponibles</h2>
+    <div class="game-list" id="game-list">
+        {% for juego in juegos %}
+            {% if juego[6] == 'universal' or juego[6] == 'nintendo' %}
+                <div class="game-item" data-category="{{ juego[3] }}">
+                    <div class="game-image-container">
+                        {% if juego[5] %}
+                            <img class="game-image" src="data:image/png;base64,{{ juego[5] | b64encode }}" alt="{{ juego[1] }}">
+                        {% else %}
+                            <img class="game-image" src="{{ url_for('static', filename='images/no-image.png') }}" alt="No disponible">
+                        {% endif %}
+                    </div>
+                    <div class="game-info">
+                        <p><strong>Nombre:</strong> {{ juego[1] }}</p>
+                        <p><strong>Precio:</strong> {{ juego[2] }}</p>
+                        <p><strong>Categoría:</strong> {{ juego[3] }}</p>
+                        <p><strong>Descripción:</strong> {{ juego[4] }}</p>
+                        <p><strong>Marca:</strong> {{ juego[6] }}</p>
+                        <button class="add-to-cart-button" data-id="{{ juego[0] }}" data-name="{{ juego[1] }}" data-price="{{ juego[2] }}"  data-image="{% if juego[5] %}data:image/png;base64,{{ juego[5] | b64encode }}{% else %}{{ url_for('static', filename='images/no-image.png') }}{% endif %}">Agregar al Carrito</button>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addToCartButtons = document.querySelectorAll('.add-to-cart-button');
+    
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                const productId = event.target.getAttribute('data-id');
+                const productName = event.target.getAttribute('data-name');
+                const productPrice = event.target.getAttribute('data-price');
+                const productImage = event.target.getAttribute('data-image');
+    
+                // Obtener el carrito del localStorage o inicializarlo si está vacío
+                var cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+                // Agregar el nuevo producto al carrito
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: productPrice,
+                    image: productImage
+                });
+    
+                // Guardar el carrito actualizado en el localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+    
+                // Actualizar el contador del carrito
+                document.getElementById('cart-count').textContent = cart.length;
+    
+                // Informar al usuario que el producto ha sido agregado al carrito
+                alert('Producto agregado al carrito!');
+            });
+        });
+    });
+    </script>
+
+<section id="contact">
+    <h2>Contacto</h2>
+    <form action="mailto:soporte@tiendajuegos.com" method="post" enctype="text/plain">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="name">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+        <label for="message">Mensaje:</label>
+        <textarea id="message" name="message"></textarea>
+        <button type="submit">Enviar</button>
+    </form>
+</section>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #d91919d0;
+}
+
+section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+</style>
+{% endblock %}

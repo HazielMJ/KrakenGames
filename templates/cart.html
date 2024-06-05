@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Carrito - Tienda de Juegos{% endblock %}
+
+{% block content %}
+<section id="cart">
+    <h2>Carrito de Compras</h2>
+    <div class="brand-filter">
+        <label for="brand-select">Elige una marca:</label>
+        <select id="brand-select" onchange="filterByBrand()">
+            <option value="">Todas las marcas</option>
+            <option value="playstation">PlayStation</option>
+            <option value="xbox">Xbox</option>
+            <option value="nintendo">Nintendo</option>
+        </select>
+    </div>
+    <ul id="cart-list">
+        <!-- Los elementos del carrito se llenarán dinámicamente con JavaScript -->
+    </ul>
+    <button id="checkout-button">Proceder al Pago</button>
+</section>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var cart = JSON.parse(localStorage.getItem('cart')) || [];
+    var cartList = document.getElementById('cart-list');
+
+    function updateCart() {
+        cartList.innerHTML = '';
+        cart.forEach(function(item, index) {
+            var listItem = document.createElement('li');
+            listItem.classList.add('cart-item');
+
+            var itemImage = document.createElement('img');
+            itemImage.src = item.image;
+            itemImage.alt = item.name;
+            itemImage.classList.add('cart-item-image');
+
+            var itemInfo = document.createElement('div');
+            itemInfo.classList.add('cart-item-info');
+            itemInfo.textContent = item.name + ' - ' + item.price;
+
+            var deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Eliminar';
+            deleteButton.setAttribute('data-index', index);
+            deleteButton.addEventListener('click', function() {
+                var itemIndex = this.getAttribute('data-index');
+                cart.splice(itemIndex, 1);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCart();
+                document.getElementById('cart-count').textContent = cart.length;
+            });
+
+            listItem.appendChild(itemImage);
+            listItem.appendChild(itemInfo);
+            listItem.appendChild(deleteButton);
+            cartList.appendChild(listItem);
+        });
+    }
+
+    updateCart();
+
+        document.getElementById('checkout-button').addEventListener('click', function() {
+            window.location.href = "{{ url_for('payment') }}";
+        });
+    });
+</script>
+<style>
+.cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.cart-item-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.cart-item-info {
+    flex: 1;
+    margin-right: 10px;
+}
+</style>
+{% endblock %}
